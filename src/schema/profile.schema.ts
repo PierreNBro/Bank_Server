@@ -1,0 +1,12 @@
+import mongoose, { Schema } from 'mongoose';
+import { IProfile } from '../model/profile.model';
+
+const ProfileSchema: Schema<IProfile> = new Schema({
+    profileId: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
+    password: { type: String, required: true, select: false },
+    accounts: [{ type: Schema.Types.ObjectId, ref: "Account" }],
+    jointAccounts: [{ type: Schema.Types.ObjectId, ref: "Account" }],
+});
+
+export default mongoose.model<IProfile>("Profile", ProfileSchema);

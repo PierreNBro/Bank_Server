@@ -1,0 +1,11 @@
+{
+    "host": "mongodb://localhost",
+    "port": 3000,
+    "server": {
+        "instance": {
+            "ip": "0.0.0.0",
+            "dbName": "bank"
+        }
+    },
+    "secret": "thisisjustsomekindofrandomplaceholderkey"
+}
