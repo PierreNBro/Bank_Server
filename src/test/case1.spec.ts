@@ -47,6 +47,7 @@ describe('Case 1', () => {
                 let accounts: IAccount[] = res.body.accounts;
                 let account: IAccount | undefined = accounts.find(account => account.accountId === '1234');
                 expect(account!.balance).toBe('550.00');
+                done();
             })
     });
 });
