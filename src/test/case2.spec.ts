@@ -54,12 +54,45 @@ describe('case 2', () => {
             });
     });
 
-    test.todo('Glen Quagmire widthdraws $12,500.00 USD from account 2001');
+    test('Glen Quagmire widthdraws $12,500.00 USD from account 2001', async done => {
+        const mockData = {
+            'accountId': '2001',
+            'description': "Widthrawal",
+            'widthrawal': '12500.00'
+        }
+        api
+            .post('/api/accounts/transaction')
+            .set('Authorization', tempToken)
+            .query({ 'currency': 'USD' })
+            .send(mockData)
+            .expect('Content-Type', /json/)
+            .expect(201)
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.message).toBe('Transaction record created');
+                done();
+            });
 
-    test.todo('Glen Quagmire account balance after widthrawal');
+    });
 
-    test.todo('Glen Quagmire deposits $300.00 CA to account 2001');
+    test('Glen Quagmire account balance after widthrawal', async done => {
+        api
+            .get('/api/accounts')
+            .set('Authorization', tempToken)
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .end((err, res) => {
+                if (err) done(err);
+                let accounts: IAccount[] = res.body.accounts;
+                let account: IAccount | undefined = accounts.find(account => account.accountId === '2001');
+                console.log(`Balance: ${account!.balance}`);
+                expect(account!.balance).toBe('9500.00');
+                done();
+            });
+    });
 
-    test.todo('Glen Quagmire account balance');
+test.todo('Glen Quagmire deposits $300.00 CA to account 2001');
+
+test.todo('Glen Quagmire account balance');
 
 });
