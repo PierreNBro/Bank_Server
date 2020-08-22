@@ -2,7 +2,7 @@ import { Document } from 'mongoose';
 import { IProfile } from './profile.model';
 
 export enum ConversionType {
-    USD = 1.5,
+    USD = 2.0,
     CA = 1,
     MXN = .10
 }

@@ -1,22 +1,25 @@
 import { api } from "./server.spec";
 import { IAccount } from "../model/account.model";
 
+
 describe('Case 1', () => {
     let tempToken: string;
-    test('Register Stewie Griffin Account', async done => {
+    test('Register Stewie Griffin Account', done => {
         api
             .post('/api/auth/register')
             .send({ 'profileId': '777', 'password': '1234' })
             .expect('Content-Type', /json/)
             .expect(201)
             .end((err, res) => {
-                if (err) return done(err);
+                if (err) done(err);
                 tempToken = res.body.token;
                 done();
-            })
+            });
     });
 
-    test('Stewie Griffin deposits 300 USD', async done => {
+    test.todo('Login as StewieGriffin');
+
+    test('Stewie Griffin deposits 300 USD', done => {
         const mockData = {
             'accountId': '1234',
             'description': "Deposit",
@@ -30,24 +33,25 @@ describe('Case 1', () => {
             .expect('Content-Type', /json/)
             .expect(201)
             .end((err, res) => {
-                if (err) return done(err);
+                if (err) done(err);
                 expect(res.body.message).toBe('Transaction record created');
                 done();
-            })
+            });
     });
 
-    test('Stewie Griffin\'s new account balance for account 1234', async done => {
+    test('Stewie Griffin\'s new account balance for account 1234', done => {
         api
-            .get('/api/account')
+            .get('/api/accounts')
             .set('Authorization', tempToken)
             .expect('Content-Type', /json/)
             .expect(200)
             .end((err, res) => {
-                if (err) return done();
+                if (err) done(err);
                 let accounts: IAccount[] = res.body.accounts;
                 let account: IAccount | undefined = accounts.find(account => account.accountId === '1234');
-                expect(account!.balance).toBe('550.00');
+                console.log(`Balance: ${account!.balance}`);
+                expect(account!.balance).toBe('700.00');
                 done();
-            })
+            });
     });
 });
