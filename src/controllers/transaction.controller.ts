@@ -40,10 +40,6 @@ export async function createTransaction(req: Request, res: Response) {
             balance: a
         });
 
-        console.log("Transaction: ", data.toString());
-
-        console.log('transaction completed');
-
         res.status(201).json({ message: "Transaction record created" });
     } catch (e) {
         res.status(400).json({ message: e.message });
