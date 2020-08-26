@@ -28,7 +28,7 @@ export function verifyToken(req: Request | any, res: Response<IAuthError>, next:
                 throw new Error('This token is no longer valid');
             }
         } catch(e) {
-            res.json({ message: e.message });
+            return res.json({ message: e.message });
         }
             
         next();
