@@ -57,7 +57,7 @@ export async function getAllTransactions(req: Request | any, res: Response) {
 
         res.status(200).json({ transactions: transactions});
     } catch (e) {
-        res.json({ message: e.message });
+        res.status(400).json({ message: e.message });
     }
 }
 

@@ -9,8 +9,8 @@ export async function getAllAccounts(req: Request | any, res: Response): Promise
         }, '+accounts +jointAccounts -_id -__v -name -profileId')
             .populate('accounts jointAccounts', '-__v -_id');
 
-        res.json(profile);
+        res.status(200).json(profile);
     } catch (e) {
-        res.json({ message: e.message });
+        res.status(400).json({ message: e.message });
     }
 }

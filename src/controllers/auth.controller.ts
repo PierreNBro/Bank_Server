@@ -32,16 +32,17 @@ export async function register(req: Request, res: Response): Promise<void> {
 
 
         const primaryAccounts = await Account.create(newPrimaryAccounts);
-        let jointAccounts;
+        let jointAccounts: IAccount[] | undefined;
         if (account.jointAccounts !== undefined && account.jointAccounts?.length > 0) {
             const newJointAccount: any[] = account.jointAccounts.map((value: IAccountInformation, index: number, arr: IAccountInformation[]) => {
+
                 return {
                     accountId: value.id,
                     balance: value.balance,
                     type: AccountType.JOINT,
                 };
-            })
-            jointAccounts = await Account.create(newJointAccount);
+            });
+            // jointAccounts = await Account.create(newJointAccount);
         }
 
         const doc = await Profile.create({
@@ -58,7 +59,8 @@ export async function register(req: Request, res: Response): Promise<void> {
 
         res.status(201).json({ token: token });
     } catch (e) {
-        res.json({ message: e.message });
+        console.log(`Error message: ${e.message}`);
+        res.status(400).json({ message: e.message });
     }
 }
 
