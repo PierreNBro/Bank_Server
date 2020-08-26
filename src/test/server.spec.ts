@@ -8,7 +8,7 @@ import request from 'supertest';
 export let listener: Server;
 export let api: request.SuperTest<request.Test>;
 
-beforeAll(async done => {
+beforeAll(done => {
     jest.setTimeout(30000);
     listener = app.listen(5000, () => {
         console.log("Server on port 5000");
@@ -17,13 +17,11 @@ beforeAll(async done => {
     }); 
 });
 
-afterAll(async done => {
+afterAll(done => {
     listener.close(async (err) => {
         if (err) return done(err);
         if ((await DBPath).instanceInfoSync!.dbName !== undefined) {
-            console.log("Clearing mongo cache...");
             fs.removeSync(path.resolve((await DBPath).instanceInfoSync!.dbName));
-            console.log("Cache Cleared");
         }
         await mongoose.connection.close();
         (await (await DBPath).runningInstance)!.instance.kill();

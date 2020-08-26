@@ -20,38 +20,36 @@ export async function register(req: Request, res: Response): Promise<void> {
             throw new Error("There is no rejesterd account with this number");
         }
 
-
-        const newPrimaryAccounts = account.accounts.map((value: IAccountInformation, index: number, arr: IAccountInformation[]) => {
-            return {
-                accountId: value.id,
-                balance: value.balance,
-                type: AccountType.PRIMARY,
-            };
-        })
-
-
-
-        const primaryAccounts = await Account.create(newPrimaryAccounts);
-        let jointAccounts: IAccount[] | undefined;
-        if (account.jointAccounts !== undefined && account.jointAccounts?.length > 0) {
-            const newJointAccount: any[] = account.jointAccounts.map((value: IAccountInformation, index: number, arr: IAccountInformation[]) => {
-
-                return {
-                    accountId: value.id,
-                    balance: value.balance,
-                    type: AccountType.JOINT,
-                };
-            });
-            // jointAccounts = await Account.create(newJointAccount);
-        }
-
+        // Create the profile
         const doc = await Profile.create({
             profileId: data.profileId,
             name: account.name,
             password: bcrypt.hashSync(data.password),
-            accounts: primaryAccounts,
-            jointAccounts: jointAccounts
         });
+
+        if (account.accounts !== undefined && account.accounts.length > 0) {
+            const newPrimaryAccounts = account.accounts.map((value: IAccountInformation, index: number, arr: IAccountInformation[]) => {
+                return {
+                    accountId: value.id,
+                    balance: value.balance,
+                    type: AccountType.PRIMARY,
+                    profiles: [doc._id]
+                };
+            })
+
+            await Account.create(newPrimaryAccounts);
+        }
+
+        let jointAccounts: IAccount[] | undefined;
+        if (account.jointAccounts !== undefined && account.jointAccounts?.length > 0) {
+            
+            const newJointAccount: any[] = account.jointAccounts.map(async (value: IAccountInformation, index: number, arr: IAccountInformation[]) => {
+                const account = await Account.findOne({accountId: value.id});
+                account?.profiles.push(doc._id);
+                account?.update({type: AccountType.JOINT});
+                account?.save();
+            });
+        }
 
         const token: string = jwt.sign({ id: doc.id }, config.secret, {
             expiresIn: 86400
@@ -70,11 +68,11 @@ export async function login(req: Request, res: Response): Promise<void> {
 
         const profile = await Profile.findOne({
             profileId: data.profileId
-        }, '-_id -__v +password').populate('Accounts')
+        }, '-__v +password');
 
         if (profile === null) {
             res.status(404);
-            throw new Error("This account does not exist");
+            throw new Error("No Registered Account");
         }
 
         const passwordIsValid = bcrypt.compareSync(
@@ -91,9 +89,10 @@ export async function login(req: Request, res: Response): Promise<void> {
             expiresIn: 900
         });
 
-        res.status(200).json({ token });
+        res.status(200).json({ token: token });
 
     } catch (e) {
+        console.log(`Error message: ${e.message}`);
         res.json({ message: e.message });
     }
 }

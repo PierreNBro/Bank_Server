@@ -26,10 +26,7 @@ export default async () => {
         })
 
         const connInfo = mongod.instanceInfoSync;
-        console.log(' Connection Details:');
-        console.log(` DB Name: ${connInfo?.dbName}`);
-        console.log(` DB Path: ${connInfo?.dbPath}`);
-        console.log(` DB Port: ${connInfo?.port}`);
+        console.log(` Connection Details:\n DB Name: ${connInfo?.dbName}\n DB Port: ${connInfo?.port}`);
         return mongod;
     } catch (e) {
         console.log("Failed to connect to Database");

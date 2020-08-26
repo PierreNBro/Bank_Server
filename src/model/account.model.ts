@@ -16,6 +16,7 @@ export interface IAccount extends Document {
     accountId: string;
     balance: string;
     type: AccountType.PRIMARY | AccountType.JOINT;
+    profiles: IProfile['_id'][];
 }
 
 export interface IBankInformation {

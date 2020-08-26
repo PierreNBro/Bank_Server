@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
 import { ITransaction } from '../model/transaction.model';
 import Transaction from '../schema/transactions.schema';
-import { ConversionType } from '../model/account.model';
+import { ConversionType, IAccount } from '../model/account.model';
 import Account from '../schema/account.schema';
+import Profile from '../schema/profile.schema';
 import mongoose from 'mongoose';
+
 
 export async function createTransaction(req: Request, res: Response) {
     try {
@@ -11,8 +13,15 @@ export async function createTransaction(req: Request, res: Response) {
         const currencyType: number = ConversionType[c];
         const accountId = req.body.accountId;
 
-        const account = await Account.findOne({ accountId }, '_id balance');
-
+        
+        const accounts = await Account.find({ profiles: (req as any).token });
+        if (accounts === undefined || accounts.length <= 0) {
+            throw new Error("Cannot make changes to this account");
+        }
+        const account = accounts.find(account => account.accountId === accountId);
+        // const account = (profile?.accounts as IAccount[]).find((val, i) => val._id === accountId);
+        // if (account === undefined) throw new Error('Account does not exist for this user');
+        
         let a = account?.balance;
 
         if (req.body.deposit !== undefined && req.body.deposit !== null && req.body.deposit !== '') {
@@ -20,6 +29,7 @@ export async function createTransaction(req: Request, res: Response) {
             a = (parseFloat(a as string) + parseFloat(convertCurrency(req.body.deposit, currencyType))).toFixed(2);
             console.log("After Deposit Balace: ", a);
             account?.updateOne({ balance: a }).exec();
+            // account.balance = a;
         }
 
         if (req.body.widthrawal !== undefined && req.body.widthrawal !== null && req.body.widthrawal !== '') {
@@ -27,6 +37,7 @@ export async function createTransaction(req: Request, res: Response) {
             a = (parseFloat(a as string) - parseFloat(convertCurrency(req.body.widthrawal, currencyType))).toFixed(2);
             console.log("After Widthrawal Balace: ", a);
             account?.updateOne({ balance: a }).exec();
+            // account.balance = a;
         }
 
         console.log(`Account id: ${account?.id}`);

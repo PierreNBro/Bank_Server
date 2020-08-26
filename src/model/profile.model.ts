@@ -5,6 +5,4 @@ export interface IProfile extends Document {
     profileId: string;
     name: string;
     password?: string;
-    accounts?: IAccount[];
-    jointAccounts?: IAccount[]
 }

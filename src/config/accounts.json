@@ -61,11 +61,6 @@
     },
     {
         "id": "219",
-        "accounts": [
-            {
-                "id": "1010",
-                "balance": "7425.00"
-            }
-        ]
+        "name": "John Shark"
     }
 ]

@@ -1,7 +1,6 @@
 import { api } from "./server.spec";
 import { IAccount } from "../model/account.model";
 
-
 describe('Case 1', () => {
     let tempToken: string;
     test('Register Stewie Griffin Account', done => {
@@ -17,7 +16,46 @@ describe('Case 1', () => {
             });
     });
 
-    test.todo('Login as StewieGriffin');
+    test('Login as Stewie Griffin wrong password', done => {
+        api
+            .post('/api/auth/login')
+            .send({ 'profileId': '777', 'password': '123456' })
+            .expect('Content-Type', /json/)
+            .expect(401)
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.message).toBe('Invalid Password');
+                done();
+            });
+    });
+
+    test('Login as an unregistered account', done => {
+        api
+            .post('/api/auth/login')
+            .send({ 'profileId': '403', 'password': '1234' })
+            .expect('Content-Type', /json/)
+            .expect(404)
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.message).toBe('No Registered Account');
+                done();
+            });
+    });
+
+    test('Login as Stewie Griffin', done => {
+        api
+            .post('/api/auth/login')
+            .send({ 'profileId': '777', 'password': '1234' })
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .end((err, res) => {
+                console.log(`Error: ${err}`);
+                if (err) done(err);
+                tempToken = res.body.token;
+
+                done();
+            });
+    });
 
     test('Stewie Griffin deposits 300 USD', done => {
         const mockData = {
