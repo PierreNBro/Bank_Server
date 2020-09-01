@@ -17,3 +17,13 @@ export async function getAllAccounts(req: Request | any, res: Response): Promise
         res.status(400).json({ message: e.message });
     }
 }
+
+export async function getAccount(req: Request, res: Response): Promise<void> {
+    try {
+        const account = await Account.findOne({ accountId: req.params.accountId });
+        console.log(`Account: ${account}`);
+        res.status(200).json({account});
+    } catch(e) {
+        res.status(400).json({ message: e.message });
+    }
+}

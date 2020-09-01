@@ -1,5 +1,6 @@
 import { Document } from 'mongoose';
 import { IProfile } from './profile.model';
+import { inherits } from 'util';
 
 export enum ConversionType {
     USD = 2.0,

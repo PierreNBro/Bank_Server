@@ -9,7 +9,7 @@ export function verifyToken(req: Request | any, res: Response<IAuthError>, next:
     let token: string | undefined = req.headers.authorization?.toString();
 
     if (!token) {
-        return res.status(403).json({ message: "No token povided" } as IAuthError);
+        return res.status(403).json({ message: "No token provided" } as IAuthError);
     }
 
     jwt.verify(token, config.secret, async (err, decoded: any) => {
