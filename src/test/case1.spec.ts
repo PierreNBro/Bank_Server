@@ -18,7 +18,7 @@ describe('Case 1', () => {
 
     test('Login as Stewie Griffin wrong password', done => {
         api
-            .post('/api/auth/login')
+            .post('/api/auth/signin')
             .send({ 'profileId': '777', 'password': '123456' })
             .expect('Content-Type', /json/)
             .expect(401)
@@ -29,22 +29,9 @@ describe('Case 1', () => {
             });
     });
 
-    test('Login as an unregistered account', done => {
-        api
-            .post('/api/auth/login')
-            .send({ 'profileId': '403', 'password': '1234' })
-            .expect('Content-Type', /json/)
-            .expect(404)
-            .end((err, res) => {
-                if (err) done(err);
-                expect(res.body.message).toBe('No Registered Account');
-                done();
-            });
-    });
-
     test('Login as Stewie Griffin', done => {
         api
-            .post('/api/auth/login')
+            .post('/api/auth/signin')
             .send({ 'profileId': '777', 'password': '1234' })
             .expect('Content-Type', /json/)
             .expect(200)

@@ -10,7 +10,7 @@ describe('case 0', () => {
             .expect(403)
             .end((err, res) => {
                 if (err) done(err);
-                expect(res.body.message).toBe('No token povided');
+                expect(res.body.message).toBe('No token provided');
                 done();
             });
     });
