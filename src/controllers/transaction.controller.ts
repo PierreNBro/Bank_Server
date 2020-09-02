@@ -59,7 +59,7 @@ export async function createTransaction(req: Request, res: Response) {
 
 export async function getAllTransactions(req: Request | any, res: Response) {
     try {
-        const account = await Account.findOne({ accountId: req.body.accountId }, '_id');
+        const account = await Account.findOne({ accountId: req.params.accountId }, '_id');
         const transactions: ITransaction[] = await Transaction.find({
             accountId: account?._id
         }, '-_id -__v').exec();
@@ -68,6 +68,7 @@ export async function getAllTransactions(req: Request | any, res: Response) {
 
         res.status(200).json({ transactions: transactions});
     } catch (e) {
+        console.log(`Error: ${e.message}`);
         res.status(400).json({ message: e.message });
     }
 }

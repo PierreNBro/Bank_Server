@@ -28,7 +28,7 @@ api.post('/auth/signin',login);
 api.post('/auth/register', register);
 api.get('/accounts', verifyToken, getAllAccounts);
 api.get('/accounts/:accountId', verifyToken, getAccount);
-api.get('/accounts/transaction', verifyToken, getAllTransactions);
+api.get('/accounts/:accountId/transaction', verifyToken, getAllTransactions);
 api.post('/accounts/transaction', verifyToken, createTransaction);
 
 app.use('/api', api);
