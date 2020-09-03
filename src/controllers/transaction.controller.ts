@@ -25,22 +25,16 @@ export async function createTransaction(req: Request, res: Response) {
         let a = account?.balance;
 
         if (req.body.deposit !== undefined && req.body.deposit !== null && req.body.deposit !== '') {
-            console.log("Before Balance: ", a);
             a = (parseFloat(a as string) + parseFloat(convertCurrency(req.body.deposit, currencyType))).toFixed(2);
-            console.log("After Deposit Balace: ", a);
             account?.updateOne({ balance: a }).exec();
             // account.balance = a;
         }
 
         if (req.body.widthrawal !== undefined && req.body.widthrawal !== null && req.body.widthrawal !== '') {
-            console.log("Before Balance: ", a);
             a = (parseFloat(a as string) - parseFloat(convertCurrency(req.body.widthrawal, currencyType))).toFixed(2);
-            console.log("After Widthrawal Balace: ", a);
             account?.updateOne({ balance: a }).exec();
             // account.balance = a;
         }
-
-        console.log(`Account id: ${account?.id}`);
 
         const data: ITransaction = req.body;
         await Transaction.create({
@@ -63,8 +57,6 @@ export async function getAllTransactions(req: Request | any, res: Response) {
         const transactions: ITransaction[] = await Transaction.find({
             accountId: account?._id
         }, '-_id -__v').exec();
-
-        console.log(`All Transactions: ${transactions}`);
 
         res.status(200).json({ transactions: transactions});
     } catch (e) {

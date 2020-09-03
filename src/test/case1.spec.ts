@@ -74,7 +74,6 @@ describe('Case 1', () => {
                 if (err) done(err);
                 let accounts: IAccount[] = res.body.accounts;
                 let account: IAccount | undefined = accounts.find(account => account.accountId === '1234');
-                console.log(`Balance: ${account!.balance}`);
                 expect(account!.balance).toBe('700.00');
                 done();
             });
